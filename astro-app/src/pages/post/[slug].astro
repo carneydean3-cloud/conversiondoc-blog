@@ -16,14 +16,64 @@ const { post }: any = Astro.props;
 
 <Layout title={post.title}>
   <style is:inline>
-    .article-container { max-width: 750px; margin: 4rem auto; padding: 0 2rem; }
-    .post-title { font-size: 3.5rem; font-weight: 800; color: #111827; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1.5rem; }
-    .post-meta { color: #6b7280; font-size: 1rem; margin-bottom: 3rem; display: block; font-weight: 500; }
-    .content { font-size: 1.25rem; line-height: 1.7; color: #374151; }
-    .content p { margin-bottom: 1.8rem; }
-    .content h2 { font-size: 2rem; margin-top: 3rem; color: #111827; }
-    .back-link { display: inline-block; margin-top: 5rem; padding-top: 2rem; border-top: 1px solid #e5e7eb; width: 100%; color: #2563eb; font-weight: 600; text-decoration: none; }
-    .back-link:hover { text-decoration: underline; }
+    /* Forces the main container to center */
+    .article-container { 
+        max-width: 750px; 
+        margin: 4rem auto; 
+        padding: 0 2rem; 
+    }
+    
+    /* Forces the Title to be bright white */
+    .post-title { 
+        font-size: 3.5rem; 
+        font-weight: 800; 
+        color: #ffffff !important; 
+        letter-spacing: -0.04em; 
+        line-height: 1.1; 
+        margin-bottom: 1.5rem; 
+    }
+    
+    /* Forces the Date to be light blue-gray */
+    .post-meta { 
+        color: #94a3b8 !important; 
+        font-size: 1rem; 
+        margin-bottom: 3rem; 
+        display: block; 
+    }
+    
+    /* Forces the Body Text to be very light gray for readability */
+    .content { 
+        font-size: 1.25rem; 
+        line-height: 1.8; 
+        color: #e2e8f0 !important; 
+    }
+    
+    /* Ensures paragraphs inside the body are also white */
+    .content p { 
+        margin-bottom: 1.8rem; 
+        color: #e2e8f0 !important; 
+    }
+
+    /* Ensures any headers inside the post are white */
+    .content h1, .content h2, .content h3 { 
+        color: #ffffff !important; 
+        margin-top: 3rem; 
+    }
+
+    /* Fixes the "Back" link at the bottom to match your teal brand */
+    .back-link { 
+        display: inline-block; 
+        margin-top: 5rem; 
+        padding-top: 2rem; 
+        border-top: 1px solid rgba(255,255,255,0.1); 
+        width: 100%; 
+        color: #14b885 !important; 
+        font-weight: 600; 
+        text-decoration: none; 
+    }
+    .back-link:hover { 
+        text-decoration: underline; 
+    }
   </style>
 
   <main class="article-container">
