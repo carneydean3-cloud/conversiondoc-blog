@@ -1,40 +1,27 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { sanityClient } from "sanity:client";
-
 const posts = await sanityClient.fetch(`*[_type == "post"] | order(publishedAt desc)`);
 ---
-
-<Layout title="ConversionDoc | Insights">
-	<main class="max-w-5xl mx-auto px-6 py-16">
-		<header class="mb-16">
-			<h1 class="text-5xl font-extrabold tracking-tight mb-4 text-slate-900">Inside ConversionDoc</h1>
-			<p class="text-xl text-slate-600 max-w-2xl text-left">Strategic thoughts on marketing, conversion, and growth. Updated weekly.</p>
-		</header>
-		
-		<div class="grid gap-10 md:grid-cols-2">
-			{posts && posts.length > 0 ? (
-				posts.map((post: any) => (
-					<article class="group bg-white border border-slate-200 rounded-2xl p-8 hover:border-blue-400 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 flex flex-col justify-between">
-						<div>
-							<div class="flex items-center gap-2 mb-4">
-								<span class="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Article</span>
-								<span class="text-slate-400 text-xs">{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Just Published'}</span>
-							</div>
-							<h2 class="text-3xl font-bold text-slate-900 mb-4 group-hover:text-blue-600 transition-colors">
-								<a href={`/post/${post.slug.current}`}>{post.title}</a>
-							</h2>
-						</div>
-						<a href={`/post/${post.slug.current}`} class="text-blue-600 font-semibold inline-flex items-center gap-2 group-hover:gap-3 transition-all">
-							Read Article <span>→</span>
-						</a>
-					</article>
-				))
-			) : (
-				<div class="col-span-full py-20 text-center border-2 border-dashed rounded-2xl bg-slate-50">
-					<p class="text-slate-500 font-medium">No posts found. Start writing in the desk.</p>
-				</div>
-			)}
-		</div>
-	</main>
+<Layout title="ConversionDoc | Blog">
+    <main>
+        <header>
+            <h1>Inside ConversionDoc</h1>
+            <p class="hero-sub">Strategic thoughts on marketing, conversion, and growth.</p>
+        </header>
+        <div class="grid">
+            {posts && posts.length > 0 ? (
+                posts.map((post: any) => (
+                    <a href={`/post/${post.slug.current}`} class="card">
+                        <span class="card-tag">Article</span>
+                        <h2 class="card-title">{post.title}</h2>
+                        <span class="card-date">{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Just Published'}</span>
+                        <span class="card-link">Read Article →</span>
+                    </a>
+                ))
+            ) : (
+                <p>No posts found. Start writing in the desk!</p>
+            )}
+        </div>
+    </main>
 </Layout>
