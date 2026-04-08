@@ -4,7 +4,16 @@ import { sanityClient } from "sanity:client";
 import { PortableText } from "astro-portabletext";
 
 export async function getStaticPaths() {
-  const posts = await sanityClient.fetch(`*[_type == "post"]`);
+  const posts = await sanityClient.fetch(`*[_type == "post"]{
+    ...,
+    body[]{
+      ...,
+      _type == "image" => {
+        ...,
+        "url": asset->url
+      }
+    }
+  }`);
   return posts.map((post: any) => ({
     params: { slug: post.slug.current },
     props: { post },
@@ -12,18 +21,21 @@ export async function getStaticPaths() {
 }
 
 const { post }: any = Astro.props;
+
+const components = {
+  type: {
+    image: ({ node }: any) => `<img src="${node.url}" alt="${node.alt || ''}" style="max-width:100%;margin:2rem 0;border-radius:8px;" />`
+  }
+};
 ---
 
 <Layout title={post.title}>
   <style is:inline>
-    /* Forces the main container to center */
     .article-container { 
         max-width: 750px; 
         margin: 4rem auto; 
         padding: 0 2rem; 
     }
-    
-    /* Forces the Title to be bright white */
     .post-title { 
         font-size: 3.5rem; 
         font-weight: 800; 
@@ -32,35 +44,30 @@ const { post }: any = Astro.props;
         line-height: 1.1; 
         margin-bottom: 1.5rem; 
     }
-    
-    /* Forces the Date to be light blue-gray */
     .post-meta { 
         color: #94a3b8 !important; 
         font-size: 1rem; 
         margin-bottom: 3rem; 
         display: block; 
     }
-    
-    /* Forces the Body Text to be very light gray for readability */
     .content { 
         font-size: 1.25rem; 
         line-height: 1.8; 
         color: #e2e8f0 !important; 
     }
-    
-    /* Ensures paragraphs inside the body are also white */
     .content p { 
         margin-bottom: 1.8rem; 
         color: #e2e8f0 !important; 
     }
-
-    /* Ensures any headers inside the post are white */
     .content h1, .content h2, .content h3 { 
         color: #ffffff !important; 
         margin-top: 3rem; 
     }
-
-    /* Fixes the "Back" link at the bottom to match your teal brand */
+    .content img {
+        max-width: 100%;
+        margin: 2rem 0;
+        border-radius: 8px;
+    }
     .back-link { 
         display: inline-block; 
         margin-top: 5rem; 
@@ -85,7 +92,7 @@ const { post }: any = Astro.props;
     </header>
     
     <div class="content">
-      <PortableText value={post.body} />
+      <PortableText value={post.body} components={components} />
     </div>
 
     <a href="/" class="back-link">← Back to all insights</a>
