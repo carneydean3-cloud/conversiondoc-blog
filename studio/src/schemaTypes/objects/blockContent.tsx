@@ -6,7 +6,6 @@ export default defineType({
   type: 'array',
   of: [
     defineArrayMember({
-      title: 'Block',
       type: 'block',
       styles: [
         {title: 'Normal', value: 'normal'},
@@ -26,25 +25,38 @@ export default defineType({
           {title: 'Emphasis', value: 'em'},
         ],
         annotations: [
-          {
+          defineField({
             title: 'URL',
             name: 'link',
             type: 'object',
             fields: [
-              {title: 'URL', name: 'href', type: 'url'},
+              defineField({
+                title: 'URL',
+                name: 'href',
+                type: 'url',
+              }),
             ],
-          },
+          }),
         ],
       },
     }),
 
+    // Inline images inside the body
     defineArrayMember({
-      title: 'Image',
       type: 'image',
+      title: 'Image',
       options: {hotspot: true},
       fields: [
-        defineField({name: 'alt', title: 'Alt text', type: 'string'}),
-        defineField({name: 'caption', title: 'Caption', type: 'string'}),
+        defineField({
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+        }),
+        defineField({
+          name: 'caption',
+          title: 'Caption',
+          type: 'string',
+        }),
       ],
     }),
   ],
