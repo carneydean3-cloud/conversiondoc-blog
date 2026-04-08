@@ -1,4 +1,4 @@
-import {defineType, defineArrayMember} from 'sanity'
+import {defineType, defineArrayMember, defineField} from 'sanity'
 
 export default defineType({
   title: 'Block Content',
@@ -41,11 +41,25 @@ export default defineType({
         ],
       },
     }),
-    defineArrayMember({
+
+    // IMPORTANT: use defineField for the image schema in Portable Text
+    defineField({
+      name: 'image',
       title: 'Image',
-      name: 'inlineImage',
       type: 'image',
       options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+        }),
+        defineField({
+          name: 'caption',
+          title: 'Caption',
+          type: 'string',
+        }),
+      ],
     }),
   ],
 })
