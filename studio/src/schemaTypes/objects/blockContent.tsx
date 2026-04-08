@@ -1,4 +1,4 @@
-import {defineType, defineArrayMember, defineField} from 'sanity'
+import {defineType, defineArrayMember} from 'sanity'
 
 export default defineType({
   title: 'Block Content',
@@ -44,18 +44,6 @@ export default defineType({
     defineArrayMember({
       type: 'image',
       options: {hotspot: true},
-      fields: [
-        defineField({
-          name: 'alt',
-          title: 'Alternative text',
-          type: 'string',
-        }),
-        defineField({
-          name: 'caption',
-          title: 'Caption',
-          type: 'string',
-        }),
-      ],
     }),
   ],
 })
