@@ -46,9 +46,7 @@ if (currentTextBlocks.length > 0) {
 }
 ---
 
-<Layout title={post.title}>
-  <meta name="description" content={post.metaDescription || ''} slot="head" />
-  
+<Layout title={post.title} description={post.metaDescription || ''}>
   <style is:inline>
     .article-container { 
         max-width: 750px; 
