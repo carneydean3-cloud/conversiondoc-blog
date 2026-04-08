@@ -31,34 +31,20 @@ export default defineType({
             name: 'link',
             type: 'object',
             fields: [
-              {
-                title: 'URL',
-                name: 'href',
-                type: 'url',
-              },
+              {title: 'URL', name: 'href', type: 'url'},
             ],
           },
         ],
       },
     }),
 
-    // IMPORTANT: use defineField for the image schema in Portable Text
-    defineField({
-      name: 'image',
+    defineArrayMember({
       title: 'Image',
       type: 'image',
       options: {hotspot: true},
       fields: [
-        defineField({
-          name: 'alt',
-          title: 'Alt text',
-          type: 'string',
-        }),
-        defineField({
-          name: 'caption',
-          title: 'Caption',
-          type: 'string',
-        }),
+        defineField({name: 'alt', title: 'Alt text', type: 'string'}),
+        defineField({name: 'caption', title: 'Caption', type: 'string'}),
       ],
     }),
   ],
