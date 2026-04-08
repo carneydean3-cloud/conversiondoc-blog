@@ -31,10 +31,23 @@ export default defineConfig({
             type: "datetime",
           },
           {
+            name: "mainImage",
+            title: "Main Image",
+            type: "image",
+            options: { hotspot: true },
+          },
+          {
             name: "body",
             title: "Body",
             type: "array",
-            of: [{ type: "block" }],
+            of: [
+              { type: "block" },
+              {
+                type: "image",
+                title: "Image",
+                options: { hotspot: true },
+              },
+            ],
           },
         ],
       }),
