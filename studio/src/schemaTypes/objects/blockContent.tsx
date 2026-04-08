@@ -42,6 +42,8 @@ export default defineType({
       },
     }),
     defineArrayMember({
+      title: 'Image',
+      name: 'inlineImage',
       type: 'image',
       options: {hotspot: true},
     }),
