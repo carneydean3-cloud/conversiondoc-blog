@@ -25,6 +25,25 @@ export async function getStaticPaths() {
 }
 
 const { post }: any = Astro.props;
+
+// Split body into segments — alternate between text blocks and images
+const bodySegments: any[] = [];
+let currentTextBlocks: any[] = [];
+
+for (const block of post.body || []) {
+  if (block._type === 'image') {
+    if (currentTextBlocks.length > 0) {
+      bodySegments.push({ type: 'text', blocks: currentTextBlocks });
+      currentTextBlocks = [];
+    }
+    bodySegments.push({ type: 'image', block });
+  } else {
+    currentTextBlocks.push(block);
+  }
+}
+if (currentTextBlocks.length > 0) {
+  bodySegments.push({ type: 'text', blocks: currentTextBlocks });
+}
 ---
 
 <Layout title={post.title}>
@@ -61,10 +80,11 @@ const { post }: any = Astro.props;
         color: #ffffff !important; 
         margin-top: 3rem; 
     }
-    .content img {
+    .article-image {
         max-width: 100%;
         margin: 2rem 0;
         border-radius: 8px;
+        display: block;
     }
     .back-link { 
         display: inline-block; 
@@ -90,13 +110,12 @@ const { post }: any = Astro.props;
     </header>
     
     <div class="content">
-      {post.body && post.body.map((block: any) => {
-        if (block._type === 'image' && block.url) {
-          return <img src={block.url} alt={block.alt || ''} style="max-width:100%;margin:2rem 0;border-radius:8px;" />
+      {bodySegments.map((segment) => {
+        if (segment.type === 'image') {
+          return <img src={segment.block.url} alt={segment.block.alt || ''} class="article-image" />
         }
-        return null;
+        return <PortableText value={segment.blocks} />
       })}
-      <PortableText value={post.body} />
     </div>
 
     <a href="/" class="back-link">← Back to all insights</a>
