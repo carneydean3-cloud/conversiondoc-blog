@@ -1,7 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { sanityClient } from "sanity:client";
-const posts = await sanityClient.fetch(`*[_type == "post"] | order(publishedAt desc)`);
+const posts = await sanityClient.fetch(`*[_type == "post"] | order(publishedAt desc){
+  _id,
+  title,
+  slug,
+  publishedAt,
+  "mainImage": mainImage.asset->url
+}`);
 ---
 <Layout title="ConversionDoc | Blog">
     <main>
@@ -13,6 +19,9 @@ const posts = await sanityClient.fetch(`*[_type == "post"] | order(publishedAt d
             {posts && posts.length > 0 ? (
                 posts.map((post: any) => (
                     <a href={`/post/${post.slug.current}`} class="card">
+                        {post.mainImage && (
+                            <img src={post.mainImage} alt={post.title} class="card-image" />
+                        )}
                         <span class="card-tag">Article</span>
                         <h2 class="card-title">{post.title}</h2>
                         <span class="card-date">{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Just Published'}</span>
@@ -24,4 +33,15 @@ const posts = await sanityClient.fetch(`*[_type == "post"] | order(publishedAt d
             )}
         </div>
     </main>
-</Layout> 
+</Layout>
+
+<style>
+  .card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: block;
+  }
+</style>
