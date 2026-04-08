@@ -31,6 +31,13 @@ export default defineConfig({
             type: "datetime",
           },
           {
+            name: "metaDescription",
+            title: "Meta Description",
+            type: "text",
+            rows: 3,
+            description: "150-160 characters recommended for SEO",
+          },
+          {
             name: "mainImage",
             title: "Main Image",
             type: "image",
