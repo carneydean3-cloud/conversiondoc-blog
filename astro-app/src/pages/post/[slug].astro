@@ -5,12 +5,16 @@ import { PortableText } from "astro-portabletext";
 
 export async function getStaticPaths() {
   const posts = await sanityClient.fetch(`*[_type == "post"]{
-    ...,
+    _id,
+    title,
+    slug,
+    publishedAt,
     body[]{
       ...,
       _type == "image" => {
-        ...,
-        "url": asset->url
+        "_type": "image",
+        "url": asset->url,
+        "alt": alt
       }
     }
   }`);
@@ -21,12 +25,6 @@ export async function getStaticPaths() {
 }
 
 const { post }: any = Astro.props;
-
-const components = {
-  type: {
-    image: ({ node }: any) => `<img src="${node.url}" alt="${node.alt || ''}" style="max-width:100%;margin:2rem 0;border-radius:8px;" />`
-  }
-};
 ---
 
 <Layout title={post.title}>
@@ -92,7 +90,13 @@ const components = {
     </header>
     
     <div class="content">
-      <PortableText value={post.body} components={components} />
+      {post.body && post.body.map((block: any) => {
+        if (block._type === 'image' && block.url) {
+          return <img src={block.url} alt={block.alt || ''} style="max-width:100%;margin:2rem 0;border-radius:8px;" />
+        }
+        return null;
+      })}
+      <PortableText value={post.body} />
     </div>
 
     <a href="/" class="back-link">← Back to all insights</a>
