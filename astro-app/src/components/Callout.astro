@@ -1,0 +1,31 @@
+---
+// Import the standard PortableText component to render the rich text inside the box
+import { PortableText } from 'astro-portabletext';
+
+const { node } = Astro.props;
+const { style, text } = node;
+
+// Match colors based on the dropdown selection in Sanity
+const styles = {
+  tldr: "bg-blue-50 border-blue-500 text-blue-900",
+  action: "bg-green-50 border-green-500 text-green-900",
+  warning: "bg-amber-50 border-amber-500 text-amber-900"
+};
+
+const labels = {
+  tldr: "TL;DR / Summary",
+  action: "Action Item",
+  warning: "Important"
+};
+---
+
+<div class={`my-8 p-6 border-l-4 rounded-r-lg ${styles[style] || styles.tldr}`}>
+  <div class="flex items-center mb-3">
+    <span class="font-bold uppercase tracking-wider text-sm opacity-80">
+      {labels[style] || labels.tldr}
+    </span>
+  </div>
+  <div class="prose-sm leading-relaxed [&>ul]:list-disc [&>ul]:ml-4 [&>ul>li]:mt-1">
+     <PortableText value={text} />
+  </div>
+</div>
