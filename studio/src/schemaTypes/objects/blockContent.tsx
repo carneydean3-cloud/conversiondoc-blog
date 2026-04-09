@@ -59,5 +59,34 @@ export default defineType({
         }),
       ],
     }),
+
+    // NEW: Custom Callout / TL;DR Block
+    defineArrayMember({
+      name: 'callout',
+      type: 'object',
+      title: 'Callout (TL;DR)',
+      fields: [
+        defineField({
+          name: 'style',
+          type: 'string',
+          title: 'Style',
+          options: {
+            list: [
+              { title: 'TL;DR (Blue)', value: 'tldr' },
+              { title: 'Action (Green)', value: 'action' },
+              { title: 'Warning (Amber)', value: 'warning' }
+            ],
+            layout: 'radio'
+          },
+          initialValue: 'tldr'
+        }),
+        defineField({
+          name: 'text',
+          type: 'array',
+          title: 'Content',
+          of: [{ type: 'block' }] // Allows rich text (bold, bullets) inside the callout
+        })
+      ]
+    })
   ],
 })
