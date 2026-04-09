@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import { sanityClient } from "sanity:client";
 import { PortableText } from "astro-portabletext";
+import Callout from "../../components/Callout.astro"; // <-- NEW: Imported your Callout component
 
 export async function getStaticPaths() {
   const posts = await sanityClient.fetch(`*[_type == "post"]{
@@ -125,7 +126,16 @@ if (currentTextBlocks.length > 0) {
         if (segment.type === 'image') {
           return <img src={segment.block.url} alt={segment.block.alt || ''} class="article-image" />
         }
-        return <PortableText value={segment.blocks} />
+        return (
+          <PortableText 
+            value={segment.blocks} 
+            components={{
+              type: {
+                callout: Callout, // <-- NEW: Tells Astro to use your custom design for the "callout" block
+              }
+            }}
+          />
+        )
       })}
     </div>
 
