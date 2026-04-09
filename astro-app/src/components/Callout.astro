@@ -1,31 +1,70 @@
 ---
-// Import the standard PortableText component to render the rich text inside the box
 import { PortableText } from 'astro-portabletext';
 
 const { node } = Astro.props;
-const { style, text } = node;
 
-// Match colors based on the dropdown selection in Sanity
-const styles = {
-  tldr: "bg-blue-50 border-blue-500 text-blue-900",
-  action: "bg-green-50 border-green-500 text-green-900",
-  warning: "bg-amber-50 border-amber-500 text-amber-900"
-};
+// 1. Safely grab the data from Sanity
+const styleName = typeof node?.style === 'string' ? node.style : 'tldr';
+const textContent = node?.text || [];
 
-const labels = {
-  tldr: "TL;DR / Summary",
-  action: "Action Item",
-  warning: "Important"
-};
+// 2. Foolproof if/else statement so TypeScript cannot fail the build
+let displayLabel = "TL;DR / Summary";
+if (styleName === 'action') {
+  displayLabel = "Action Item";
+} else if (styleName === 'warning') {
+  displayLabel = "Important";
+}
 ---
 
-<div class={`my-8 p-6 border-l-4 rounded-r-lg ${styles[style] || styles.tldr}`}>
-  <div class="flex items-center mb-3">
-    <span class="font-bold uppercase tracking-wider text-sm opacity-80">
-      {labels[style] || labels.tldr}
-    </span>
+<div class={`custom-callout callout-${styleName}`}>
+  <div class="callout-header">
+    {displayLabel}
   </div>
-  <div class="prose-sm leading-relaxed [&>ul]:list-disc [&>ul]:ml-4 [&>ul>li]:mt-1">
-     <PortableText value={text} />
+  <div class="callout-body">
+     <PortableText value={textContent} />
   </div>
 </div>
+
+<style>
+  .custom-callout {
+    margin: 2.5rem 0;
+    padding: 1.5rem 2rem;
+    border-left: 4px solid #3b82f6; /* Default Blue */
+    background-color: rgba(59, 130, 246, 0.1);
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+  .callout-action {
+    border-left-color: #10b981; /* Green */
+    background-color: rgba(16, 185, 129, 0.1);
+  }
+  .callout-warning {
+    border-left-color: #f59e0b; /* Amber */
+    background-color: rgba(245, 158, 11, 0.1);
+  }
+  .callout-header {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+    color: #ffffff;
+    opacity: 0.9;
+  }
+  .callout-body {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #e2e8f0;
+  }
+  /* Target the rich text coming from Sanity */
+  .callout-body :global(ul) {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+    margin-top: 0.5rem;
+  }
+  .callout-body :global(li) {
+    margin-top: 0.35rem;
+  }
+  .callout-body :global(strong) {
+    color: #ffffff;
+  }
+</style>
