@@ -9,39 +9,59 @@ const posts = await sanityClient.fetch(`*[_type == "post"] | order(publishedAt d
   "mainImage": mainImage.asset->url
 }`);
 ---
-<Layout title="ConversionDoc | Blog">
-    <main>
-        <header>
-            <h1>Inside ConversionDoc</h1>
-            <p class="hero-sub">Strategic thoughts on marketing, conversion, and growth.</p>
-        </header>
-        <div class="grid">
-            {posts && posts.length > 0 ? (
-                posts.map((post: any) => (
-                    <a href={`/post/${post.slug.current}`} class="card">
-                        {post.mainImage && (
-                            <img src={post.mainImage} alt={post.title} class="card-image" />
-                        )}
-                        <span class="card-tag">Article</span>
-                        <h2 class="card-title">{post.title}</h2>
-                        <span class="card-date">{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Just Published'}</span>
-                        <span class="card-link">Read Article →</span>
-                    </a>
-                ))
-            ) : (
-                <p>No posts found. Start writing in the desk!</p>
-            )}
-        </div>
-    </main>
-</Layout>
 
-<style>
-  .card-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    display: block;
-  }
-</style>
+<Layout title="ConversionDoc | Blog">
+  <main class="min-h-screen bg-[#0A0A0A] text-white px-6 py-24">
+    <div class="max-w-6xl mx-auto">
+      
+      <header class="mb-16 border-b border-[#27272a] pb-10">
+        <p class="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#06B6D4] mb-4">Transmission_Log</p>
+        <h1 class="text-4xl md:text-6xl font-black tracking-tighter uppercase text-white">Inside ConversionDoc</h1>
+        <p class="mt-4 font-mono text-sm text-zinc-400 opacity-80 max-w-xl leading-relaxed">Strategic thoughts on marketing, conversion, and growth.</p>
+      </header>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {posts && posts.length > 0 ? (
+          posts.map((post: any) => (
+            <a href={`/post/${post.slug.current}`} class="group block bg-[#111] border border-[#27272a] rounded-lg p-6 hover:border-[#06B6D4]/50 transition-all duration-300 relative overflow-hidden">
+              {/* Surgical Top Border */}
+              <div class="absolute top-0 left-0 w-full h-1 bg-[#27272a] group-hover:bg-[#06B6D4] transition-colors" />
+              
+              {post.mainImage && (
+                <div class="w-full h-48 mb-6 overflow-hidden rounded border border-[#27272a] bg-black">
+                  <img 
+                    src={post.mainImage} 
+                    alt={post.title} 
+                    class="w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 scale-105 group-hover:scale-100" 
+                  />
+                </div>
+              )}
+              
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-[#06B6D4] bg-[#06B6D4]/10 px-2 py-1 rounded border border-[#06B6D4]/20">
+                  Article
+                </span>
+                <span class="text-[9px] font-mono uppercase tracking-widest text-zinc-500">
+                  {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Just Published'}
+                </span>
+              </div>
+              
+              <h2 class="text-2xl font-bold text-white mb-6 leading-tight group-hover:text-[#06B6D4] transition-colors">
+                {post.title}
+              </h2>
+              
+              <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-400 group-hover:text-white flex items-center gap-2 transition-colors">
+                Read Transmission <span class="text-[#06B6D4] group-hover:translate-x-1 transition-transform">→</span>
+              </span>
+            </a>
+          ))
+        ) : (
+          <div class="col-span-full py-20 text-center border border-dashed border-[#27272a] rounded-lg bg-[#111]">
+            <p class="font-mono text-[10px] font-bold uppercase tracking-widest text-zinc-500">No transmissions recorded. Awaiting signals.</p>
+          </div>
+        )}
+      </div>
+
+    </div>
+  </main>
+</Layout>
