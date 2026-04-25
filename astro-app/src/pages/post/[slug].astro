@@ -2,7 +2,11 @@
 import Layout from "../../layouts/Layout.astro";
 import { sanityClient } from "sanity:client";
 import { PortableText } from "astro-portabletext";
-import Callout from "../../components/Callout.astro"; // <-- NEW: Imported your Callout component
+import Callout from "../../components/Callout.astro";
+import PostCta from "../../components/PostCta.astro";
+
+type PrimaryTool = "conversion" | "geo" | "none";
+type CtaPlacement = "both" | "end" | "off";
 
 export async function getStaticPaths() {
   const posts = await sanityClient.fetch(`*[_type == "post"]{
@@ -11,6 +15,10 @@ export async function getStaticPaths() {
     slug,
     publishedAt,
     metaDescription,
+
+    primaryTool,
+    ctaPlacement,
+
     body[]{
       ...,
       _type == "image" => {
@@ -20,6 +28,7 @@ export async function getStaticPaths() {
       }
     }
   }`);
+
   return posts.map((post: any) => ({
     params: { slug: post.slug.current },
     props: { post },
@@ -28,88 +37,103 @@ export async function getStaticPaths() {
 
 const { post }: any = Astro.props;
 
+const primaryTool: PrimaryTool = post.primaryTool || "geo";
+const ctaPlacement: CtaPlacement = post.ctaPlacement || "both";
+
+const shouldShowCta = primaryTool !== "none" && ctaPlacement !== "off";
+const ctaPrimary = (primaryTool === "geo" ? "geo" : "conversion") as "geo" | "conversion";
+
+// Build segments: text blocks + images
 const bodySegments: any[] = [];
 let currentTextBlocks: any[] = [];
 
 for (const block of post.body || []) {
-  if (block._type === 'image') {
+  if (block._type === "image") {
     if (currentTextBlocks.length > 0) {
-      bodySegments.push({ type: 'text', blocks: currentTextBlocks });
+      bodySegments.push({ type: "text", blocks: currentTextBlocks });
       currentTextBlocks = [];
     }
-    bodySegments.push({ type: 'image', block });
+    bodySegments.push({ type: "image", block });
   } else {
     currentTextBlocks.push(block);
   }
 }
+
 if (currentTextBlocks.length > 0) {
-  bodySegments.push({ type: 'text', blocks: currentTextBlocks });
+  bodySegments.push({ type: "text", blocks: currentTextBlocks });
 }
+
+// Helper: check if a segment contains a callout block
+function segmentHasCallout(blocks: any[]) {
+  return Array.isArray(blocks) && blocks.some((b) => b?._type === "callout");
+}
+
+let ctaInjectedAfterFirstCallout = false;
 ---
 
-<Layout title={post.title} description={post.metaDescription || ''}>
+<Layout title={post.title} description={post.metaDescription || ""}>
   <style is:inline>
-    .article-container { 
-        max-width: 750px; 
-        margin: 4rem auto; 
-        padding: 0 2rem; 
+    .article-container {
+      max-width: 750px;
+      margin: 4rem auto;
+      padding: 0 2rem;
     }
-    .post-title { 
-        font-size: 3.5rem; 
-        font-weight: 800; 
-        color: #ffffff !important; 
-        letter-spacing: -0.04em; 
-        line-height: 1.1; 
-        margin-bottom: 1.5rem; 
+    .post-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #ffffff !important;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
     }
-    .post-meta { 
-        color: #94a3b8 !important; 
-        font-size: 1rem; 
-        margin-bottom: 3rem; 
-        display: block; 
+    .post-meta {
+      color: #94a3b8 !important;
+      font-size: 1rem;
+      margin-bottom: 3rem;
+      display: block;
     }
-    .content { 
-        font-size: 1.25rem; 
-        line-height: 1.8; 
-        color: #e2e8f0 !important; 
+    .content {
+      font-size: 1.25rem;
+      line-height: 1.8;
+      color: #e2e8f0 !important;
     }
-    .content p { 
-        margin-bottom: 1.8rem; 
-        color: #e2e8f0 !important; 
+    .content p {
+      margin-bottom: 1.8rem;
+      color: #e2e8f0 !important;
     }
-    .content h1, .content h2, .content h3 { 
-        color: #ffffff !important; 
-        margin-top: 3rem; 
+    .content h1, .content h2, .content h3 {
+      color: #ffffff !important;
+      margin-top: 3rem;
     }
     .content a {
-        color: #06B6D4 !important;
-        text-decoration: underline;
+      color: #06B6D4 !important;
+      text-decoration: underline;
     }
     .content a:visited {
-        color: #06B6D4 !important;
+      color: #06B6D4 !important;
     }
     .content a:hover {
-        opacity: 0.8;
+      opacity: 0.8;
     }
     .article-image {
-        max-width: 100%;
-        margin: 2rem 0;
-        border-radius: 8px;
-        display: block;
+      max-width: 100%;
+      margin: 2rem 0;
+      border-radius: 8px;
+      display: block;
     }
-    .back-link { 
-        display: inline-block; 
-        margin-top: 5rem; 
-        padding-top: 2rem; 
-        border-top: 1px solid rgba(255,255,255,0.1); 
-        width: 100%; 
-        color: #06B6D4 !important; 
-        font-weight: 600; 
-        text-decoration: none; 
+    .back-link {
+      display: inline-block;
+      margin-top: 5rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      width: 100%;
+      color: #06B6D4 !important;
+      font-weight: 600;
+      text-decoration: none;
     }
-    .back-link:hover { 
-        opacity: 0.8;
-        text-decoration: underline; 
+    .back-link:hover {
+      opacity: 0.8;
+      text-decoration: underline;
     }
   </style>
 
@@ -117,28 +141,61 @@ if (currentTextBlocks.length > 0) {
     <header>
       <h1 class="post-title">{post.title}</h1>
       <time class="post-meta">
-        {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Published recently'}
+        {post.publishedAt
+          ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })
+          : "Published recently"}
       </time>
     </header>
-    
+
     <div class="content">
       {bodySegments.map((segment) => {
-        if (segment.type === 'image') {
-          return <img src={segment.block.url} alt={segment.block.alt || ''} class="article-image" />
+        if (segment.type === "image") {
+          return <img src={segment.block.url} alt={segment.block.alt || ""} class="article-image" />;
         }
-        return (
-          <PortableText 
-            value={segment.blocks} 
+
+        // Text segment
+        const hasCallout = segmentHasCallout(segment.blocks);
+
+        const portable = (
+          <PortableText
+            value={segment.blocks}
             components={{
               type: {
-                callout: Callout, // <-- NEW: Tells Astro to use your custom design for the "callout" block
-              }
+                callout: Callout,
+              },
             }}
           />
-        )
+        );
+
+        // Inject CTA after the first callout (TL;DR) if enabled and placement = both
+        if (
+          shouldShowCta &&
+          ctaPlacement === "both" &&
+          hasCallout &&
+          !ctaInjectedAfterFirstCallout
+        ) {
+          ctaInjectedAfterFirstCallout = true;
+          return (
+            <>
+              {portable}
+              <PostCta primaryTool={ctaPrimary} />
+            </>
+          );
+        }
+
+        return portable;
       })}
     </div>
 
-    <a href="/" class="back-link">← Back to all insights</a>
+    {/* End CTA */}
+    {shouldShowCta && (ctaPlacement === "both" || ctaPlacement === "end") ? (
+      <PostCta primaryTool={ctaPrimary} />
+    ) : null}
+
+    <a href="/blog" class="back-link">← Back to all insights</a>
   </main>
 </Layout>
