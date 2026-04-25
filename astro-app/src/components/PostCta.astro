@@ -1,6 +1,5 @@
 ---
 type Tool = "conversion" | "geo";
-type Placement = "both" | "end" | "off";
 
 interface Props {
   primaryTool: Tool;
@@ -24,8 +23,6 @@ const primaryLabel =
 const secondaryLabel =
   primaryTool === "geo" ? "Check conversion too" : "Check AI visibility too";
 
-const kicker = "NEXT STEP";
-
 const title =
   primaryTool === "geo"
     ? "Run the GEO AI scan on your page"
@@ -40,7 +37,7 @@ const primaryClass = primaryTool === "geo" ? "cd-btn cd-btn-geo" : "cd-btn cd-bt
 ---
 
 <div class="cd-cta">
-  <div class="cd-cta-kicker">{kicker}</div>
+  <div class="cd-cta-kicker">NEXT STEP</div>
   <div class="cd-cta-title">{title}</div>
   <div class="cd-cta-body">{body}</div>
 
@@ -81,6 +78,7 @@ const primaryClass = primaryTool === "geo" ? "cd-btn cd-btn-geo" : "cd-btn cd-bt
     margin-bottom: 14px;
   }
   .cd-cta-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+
   .cd-btn{
     display:inline-flex;
     align-items:center;
@@ -93,12 +91,16 @@ const primaryClass = primaryTool === "geo" ? "cd-btn cd-btn-geo" : "cd-btn cd-bt
     letter-spacing: .10em;
     text-transform: uppercase;
   }
-  .cd-btn-conv{ background:#06B6D4; color:#000; }
-  .cd-btn-geo{ background:#D946EF; color:#fff; }
+
+  /* Primary buttons: white text */
+  .cd-btn-conv{ background:#06B6D4; color:#ffffff; }
+  .cd-btn-geo{ background:#D946EF; color:#ffffff; }
+
   .cd-btn-ghost{
     background: transparent;
     border: 1px solid rgba(255,255,255,.16);
-    color: rgba(255,255,255,.80);
+    color: rgba(255,255,255,.85);
   }
+
   .cd-btn:hover{ opacity:.92; transform: translateY(-1px); }
 </style>
