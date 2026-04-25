@@ -1,0 +1,104 @@
+---
+type Tool = "conversion" | "geo";
+type Placement = "both" | "end" | "off";
+
+interface Props {
+  primaryTool: Tool;
+}
+
+const { primaryTool } = Astro.props;
+
+const primaryHref =
+  primaryTool === "geo"
+    ? "https://conversiondoc.co.uk/geo-audit"
+    : "https://conversiondoc.co.uk/conversion-audit";
+
+const secondaryHref =
+  primaryTool === "geo"
+    ? "https://conversiondoc.co.uk/conversion-audit"
+    : "https://conversiondoc.co.uk/geo-audit";
+
+const primaryLabel =
+  primaryTool === "geo" ? "Run GEO AI Scan — Free" : "Run Conversion Scan — Free";
+
+const secondaryLabel =
+  primaryTool === "geo" ? "Check conversion too" : "Check AI visibility too";
+
+const kicker = "NEXT STEP";
+
+const title =
+  primaryTool === "geo"
+    ? "Run the GEO AI scan on your page"
+    : "Run the conversion scan on your page";
+
+const body =
+  primaryTool === "geo"
+    ? "Get your AI Search Readiness score + the top visibility fixes in 60 seconds."
+    : "Get your conversion score + the top 3 fixes in 60 seconds.";
+
+const primaryClass = primaryTool === "geo" ? "cd-btn cd-btn-geo" : "cd-btn cd-btn-conv";
+---
+
+<div class="cd-cta">
+  <div class="cd-cta-kicker">{kicker}</div>
+  <div class="cd-cta-title">{title}</div>
+  <div class="cd-cta-body">{body}</div>
+
+  <div class="cd-cta-actions">
+    <a class={primaryClass} href={primaryHref}>{primaryLabel}</a>
+    <a class="cd-btn cd-btn-ghost" href={secondaryHref}>{secondaryLabel}</a>
+  </div>
+</div>
+
+<style>
+  .cd-cta{
+    margin: 28px 0 34px;
+    padding: 18px 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(255,255,255,.03);
+  }
+  .cd-cta-kicker{
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.55);
+    margin-bottom: 10px;
+    font-weight: 800;
+  }
+  .cd-cta-title{
+    font-weight: 900;
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+  .cd-cta-body{
+    color: rgba(255,255,255,.70);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .cd-cta-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .cd-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-decoration:none;
+    font-weight: 900;
+    font-size: 12px;
+    letter-spacing: .10em;
+    text-transform: uppercase;
+  }
+  .cd-btn-conv{ background:#06B6D4; color:#000; }
+  .cd-btn-geo{ background:#D946EF; color:#fff; }
+  .cd-btn-ghost{
+    background: transparent;
+    border: 1px solid rgba(255,255,255,.16);
+    color: rgba(255,255,255,.80);
+  }
+  .cd-btn:hover{ opacity:.92; transform: translateY(-1px); }
+</style>
