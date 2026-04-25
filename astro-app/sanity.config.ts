@@ -43,6 +43,42 @@ export default defineConfig({
             type: "image",
             options: { hotspot: true },
           },
+
+          // ── CTA CONTROL ──────────────────────────────────────────
+          {
+            name: "primaryTool",
+            title: "Primary CTA tool",
+            type: "string",
+            initialValue: "geo",
+            options: {
+              layout: "radio",
+              list: [
+                { title: "GEO AI", value: "geo" },
+                { title: "Conversion", value: "conversion" },
+                { title: "None", value: "none" },
+              ],
+            },
+            description:
+              "Which tool should the article push as the primary next step?",
+          },
+          {
+            name: "ctaPlacement",
+            title: "CTA placement",
+            type: "string",
+            initialValue: "both",
+            options: {
+              layout: "radio",
+              list: [
+                { title: "After TL;DR + end", value: "both" },
+                { title: "End only", value: "end" },
+                { title: "Off", value: "off" },
+              ],
+            },
+            description:
+              "Controls whether CTA blocks are injected automatically into the post layout.",
+          },
+          // ─────────────────────────────────────────────────────────
+
           {
             name: "body",
             title: "Body",
@@ -77,7 +113,7 @@ export default defineConfig({
                     name: "text",
                     type: "array",
                     title: "Content",
-                    of: [{ type: "block" }], // Allows formatting inside the callout
+                    of: [{ type: "block" }],
                   },
                 ],
               },
