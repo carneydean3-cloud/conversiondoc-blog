@@ -101,20 +101,34 @@ let ctaInjectedAfterFirstCallout = false;
       margin-bottom: 1.8rem;
       color: #e2e8f0 !important;
     }
-    .content h1, .content h2, .content h3 {
+    .content h1,
+    .content h2,
+    .content h3 {
       color: #ffffff !important;
       margin-top: 3rem;
     }
-    .content a {
-      color: #06B6D4 !important;
+
+    /* Normal article links */
+    .content a:not(.cd-btn) {
+      color: #06b6d4 !important;
       text-decoration: underline;
     }
-    .content a:visited {
-      color: #06B6D4 !important;
+    .content a:not(.cd-btn):visited {
+      color: #06b6d4 !important;
     }
-    .content a:hover {
+    .content a:not(.cd-btn):hover {
       opacity: 0.8;
     }
+
+    /* CTA buttons injected inside article content */
+    .content a.cd-btn {
+      color: #ffffff !important;
+      text-decoration: none !important;
+    }
+    .content a.cd-btn:hover {
+      opacity: 0.92;
+    }
+
     .article-image {
       max-width: 100%;
       margin: 2rem 0;
@@ -125,9 +139,9 @@ let ctaInjectedAfterFirstCallout = false;
       display: inline-block;
       margin-top: 5rem;
       padding-top: 2rem;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
       width: 100%;
-      color: #06B6D4 !important;
+      color: #06b6d4 !important;
       font-weight: 600;
       text-decoration: none;
     }
@@ -154,10 +168,15 @@ let ctaInjectedAfterFirstCallout = false;
     <div class="content">
       {bodySegments.map((segment) => {
         if (segment.type === "image") {
-          return <img src={segment.block.url} alt={segment.block.alt || ""} class="article-image" />;
+          return (
+            <img
+              src={segment.block.url}
+              alt={segment.block.alt || ""}
+              class="article-image"
+            />
+          );
         }
 
-        // Text segment
         const hasCallout = segmentHasCallout(segment.blocks);
 
         const portable = (
@@ -171,7 +190,6 @@ let ctaInjectedAfterFirstCallout = false;
           />
         );
 
-        // Inject CTA after the first callout (TL;DR) if enabled and placement = both
         if (
           shouldShowCta &&
           ctaPlacement === "both" &&
@@ -191,7 +209,6 @@ let ctaInjectedAfterFirstCallout = false;
       })}
     </div>
 
-    {/* End CTA */}
     {shouldShowCta && (ctaPlacement === "both" || ctaPlacement === "end") ? (
       <PostCta primaryTool={ctaPrimary} />
     ) : null}
